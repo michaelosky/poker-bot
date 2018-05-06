@@ -1,5 +1,5 @@
 # poker-bot
-Its a bot that does poker stuff.
+It's a bot that does poker stuff.
 
 ### Todo
 * poll functionality
