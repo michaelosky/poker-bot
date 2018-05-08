@@ -1,6 +1,5 @@
 import discord
 import settings
-import poll
 import hiddenSettings
 import asyncio
 
@@ -32,7 +31,7 @@ async def pb_send_message(message):
     if client.is_closed:
         return
     for server in client.servers:
-        if server.name not in setting.server_names
+        if server.name not in settings.server_names:
             continue
         for channel in server.channels:
             if str(channel) in settings.channel_names:
