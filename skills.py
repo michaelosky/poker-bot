@@ -33,7 +33,11 @@ async def skill_poll(client, in_message):
     return True
 
 async def skill_quiz(client, in_message):
-    out_message = "Pre-flop: " + cards.deal_two_cards_text() + \
+    card_one, card_two = cards.deal_two_cards()
+    chen_points, chen_formula_text = cards.chen_formula(card_one, card_two)
+
+    out_message = 'Pre-flop: ' + cards.card_number_to_text(card_one) + ' ' + cards.card_number_to_text(card_two) + \
+                  '\nChen Formula: ' + chen_formula_text + str(chen_points) + \
                   '\nPosition: ' + cards.get_random_position_text() + \
                   '\nCheck   Bet   Raise   AllIn   Fold'
     sent_message = await client.send_message(in_message.channel, out_message)
