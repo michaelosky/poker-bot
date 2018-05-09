@@ -1,4 +1,4 @@
-settings.py
+hiddenSettings.py
 __pycache__
 .git/*
 .idea/*
