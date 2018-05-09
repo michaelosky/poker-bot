@@ -1,2 +1,4 @@
 settings.py
 __pycache__
+.git/*
+.idea/*

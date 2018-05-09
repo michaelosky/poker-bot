@@ -1,6 +1,8 @@
 import discord
 import settings
 
+import skills
+
 TOKEN = settings.token
 
 client = discord.Client()
@@ -11,9 +13,11 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('!test'):
-        msg = "72o > AA".format(message)
-        await client.send_message(message.channel, msg)
+    out_message = skills.reply_message(message)
+    if not out_message:
+        return
+
+    await client.send_message(message.channel, out_message)
 
 @client.event
 async def on_ready():
