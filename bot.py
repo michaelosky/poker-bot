@@ -13,11 +13,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    out_message = skills.reply_message(message)
-    if not out_message:
-        return
-
-    await client.send_message(message.channel, out_message)
+    await skills.invoke_skill(client, message)
 
 @client.event
 async def on_ready():
