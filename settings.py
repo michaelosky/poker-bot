@@ -1,4 +1,4 @@
 import datetime
 
-server_names = ['SIG']
+server_names = ['ahbotdev']
 channel_names = ['poker-bot-dev']
