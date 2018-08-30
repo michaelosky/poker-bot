@@ -12,25 +12,33 @@ client = discord.Client()
 global poker_msg
 poker_msg = None
 
+day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Not Available"]
+
 emoji_table = {
     "M": "\U0001f1f2",
     "T": "\U0001f1f9",
     "W": "\U0001f1fc",
     "H": "\U0001f1ed",
-    "F": "\U0001f1eb"
+    "F": "\U0001f1eb",
+    "NA": "\U000026d4"
 }
 
-emoji_add_order = ["M", "T", "W", "H", "F"]
+emoji_add_order = ["M", "T", "W", "H", "F", "NA"]
 
 emoji_day_to_full_day = {
     "M": "Monday",
     "T": "Tuesday",
     "W": "Wednesday",
     "H": "Thursday",
-    "F": "Friday"
+    "F": "Friday",
+    "NA": "Not Available"
 }
 
 current_tally = defaultdict(int)
+
+current_tally_to_user = defaultdict(set)
+
+unique_users_voted = set()
 
 emoji_table_inverted = {v:k for k,v in emoji_table.items()}
 
@@ -74,10 +82,20 @@ async def on_reaction_add(reaction, user):
         return
     
     current_tally[emoji_day_to_full_day[day_letter]] += 1
+    
+    if str(user.id) != str(client.user.id):
+        current_tally_to_user[emoji_day_to_full_day[day_letter]].add(user.id)
+    
     print(current_tally)
+    print(current_tally_to_user)
+    
+    unique_users = set([user for _, unique_users in current_tally_to_user.items() for user in unique_users])
+    print(unique_users)
     
     updated_msg = "Select your preferred day to play poker:\n"
-    updated_msg += " | ".join(["%s: %d" % (key, value) for key, value in sorted(current_tally.items(), key=lambda item: (item[1],item[0]), reverse=True)])
+    updated_msg += " | ".join(["%s: %d" % (key, max(0, current_tally[key] - 1)) for key in day_order])
+    
+    updated_msg += " (%d people voted)" % len(unique_users)
     
     print(updated_msg)
     await client.edit_message(poker_msg, updated_msg)
@@ -103,10 +121,20 @@ async def on_reaction_remove(reaction, user):
         return
     
     current_tally[emoji_day_to_full_day[day_letter]] -= 1
+    
+    if str(user.id) != str(client.user.id):
+        current_tally_to_user[emoji_day_to_full_day[day_letter]].remove(user.id)
+    
     print(current_tally)
+    print(current_tally_to_user)
+    
+    unique_users = set([user for _, unique_users in current_tally_to_user.items() for user in unique_users])
+    print(unique_users)
     
     updated_msg = "Select your preferred day to play poker:\n"
-    updated_msg += " | ".join(["%s: %d" % (key, value) for key, value in sorted(current_tally.items(), key=lambda item: (item[1],item[0]), reverse=True)])
+    updated_msg += " | ".join(["%s: %d" % (key, max(0, current_tally[key] - 1)) for key in day_order])
+    
+    updated_msg += " (%d people voted)" % len(unique_users)
     
     print(updated_msg)
     await client.edit_message(poker_msg, updated_msg)
